@@ -247,12 +247,13 @@ SKIP_PHP="(php:(5.4|5.3|.*(RC|-rc-).*))"
 SKIP_OS="$SKIP_OS)"
 SKIP_WINDOWS="(.*(nanoserver|windows))"
 SKIP_MISC="(-?(on.?build)|pgrouting.*old)|seafile-mc:(7.0.1|7.0.2|7.0.3|7.0.4|7.0.5|7.1.3)|(dejavu:(v.*|1\..\.?.?|2\..\..)|3\.[1-3]\..|3.0.0|.*alpha.*$)"
-SKIP_NODE="((node):.*alpine3\..?.?)"
+SKIP_NODE="((node):.*alpine3\..?.?|node:.*onbuild.*)"
 SKIP_TF="(tensorflow.serving:[0-9].*)"
 SKIP_MINIO="(k8s-operator|((minio|mc):(RELEASE.)?[0-9]{4}-.{7}))"
 SKIP_MAILU="(mailu.*(feat|patch|merg|refactor|revert|upgrade|fix-|pr-template))"
 SKIP_DOCKER="docker(\/|:)([0-9]+\.[0-9]+\.|17|18.0[1-6]|1$|1(\.|-)).*"
-SKIPPED_TAGS="$SKIP_TF|$SKIP_MINOR_OS|$SKIP_NODE|$SKIP_DOCKER|$SKIP_MINIO|$SKIP_MAILU|$SKIP_MINOR_ES2|$SKIP_MINOR|$SKIP_PRE|$SKIP_OS|$SKIP_PHP|$SKIP_WINDOWS|$SKIP_MISC"
+SKIP_NODE_MINOR="node:[0456789](-(onbuild)|\.([0-9]))|1[01235]\."
+SKIPPED_TAGS="($SKIP_NODE|$SKIP_MINOR|$SKIP_NODE_MINOR)"
 CURRENT_TS=$(date +%s)
 IMAGES_SKIP_NS="((mailhog|postgis|pgrouting(-bare)?|^library|dejavu|(minio/(minio|mc))))"
 
@@ -550,9 +551,9 @@ get_image_tags() {
     fi
     if [[ -z ${SKIP_TAGS_REBUILD} ]];then
     rm -f "$t"
-    ( for i in $(cat "$t.raw");do
+    ( for j in $(cat "$t.raw");do for i in $j;do
         if is_skipped "$n:$i";then debug "Skipped: $n:$i";else printf "$i\n";fi
-      done | awk '!seen[$0]++' | sort -V ) >> "$t"
+      done;done | awk '!seen[$0]++' | sort -V ) >> "$t"
     fi
     set -e
     if [ -e "$t" ];then cat "$t";fi
