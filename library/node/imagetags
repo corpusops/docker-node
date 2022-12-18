@@ -55,6 +55,8 @@
 11-stretch-slim
 12
 12-alpine
+12-bullseye
+12-bullseye-slim
 12-buster
 12-buster-slim
 12-slim
@@ -69,6 +71,8 @@
 13-stretch-slim
 14
 14-alpine
+14-bullseye
+14-bullseye-slim
 14-buster
 14-buster-slim
 14-slim
@@ -81,6 +85,15 @@
 15-slim
 15-stretch
 15-stretch-slim
+16
+16-alpine
+16-bullseye
+16-bullseye-slim
+16-buster
+16-buster-slim
+16-slim
+16-stretch
+16-stretch-slim
 alpine
 argon
 argon-alpine
@@ -95,6 +108,8 @@ boron-slim
 boron-stretch
 boron-stretch-slim
 boron-wheezy
+bullseye
+bullseye-slim
 buster
 buster-slim
 carbon
@@ -119,6 +134,8 @@ chakracore-10.6
 chakracore-10.13
 current
 current-alpine
+current-bullseye
+current-bullseye-slim
 current-buster
 current-buster-slim
 current-slim
@@ -135,6 +152,8 @@ dubnium-stretch
 dubnium-stretch-slim
 erbium
 erbium-alpine
+erbium-bullseye
+erbium-bullseye-slim
 erbium-buster
 erbium-buster-slim
 erbium-slim
@@ -142,6 +161,8 @@ erbium-stretch
 erbium-stretch-slim
 fermium
 fermium-alpine
+fermium-bullseye
+fermium-bullseye-slim
 fermium-buster
 fermium-buster-slim
 fermium-slim
@@ -151,8 +172,11 @@ jessie
 latest
 lts
 lts-alpine
+lts-bullseye
+lts-bullseye-slim
 lts-buster
 lts-buster-slim
+lts-fermium
 lts-jessie
 lts-jessie-slim
 lts-slim
