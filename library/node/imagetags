@@ -1,14 +1,11 @@
 0
 0-slim
-0-wheezy
 4
 4-alpine
 4-slim
 4-stretch
-4-wheezy
 5
 5-slim
-5-wheezy
 6
 6-alpine
 6-jessie
@@ -16,12 +13,10 @@
 6-slim
 6-stretch
 6-stretch-slim
-6-wheezy
 7
 7-alpine
 7-slim
 7-stretch
-7-wheezy
 8
 8-alpine
 8-buster
@@ -31,13 +26,11 @@
 8-slim
 8-stretch
 8-stretch-slim
-8-wheezy
 9
 9-alpine
 9-jessie
 9-slim
 9-stretch
-9-wheezy
 10
 10-alpine
 10-buster
@@ -47,7 +40,6 @@
 10-slim
 10-stretch
 10-stretch-slim
-10-wheezy
 11
 11-alpine
 11-slim
@@ -637,7 +629,6 @@ argon
 argon-alpine
 argon-slim
 argon-stretch
-argon-wheezy
 boron
 boron-alpine
 boron-jessie
@@ -645,7 +636,6 @@ boron-jessie-slim
 boron-slim
 boron-stretch
 boron-stretch-slim
-boron-wheezy
 bullseye
 bullseye-slim
 buster
@@ -659,7 +649,6 @@ carbon-jessie-slim
 carbon-slim
 carbon-stretch
 carbon-stretch-slim
-carbon-wheezy
 chakracore
 chakracore-8
 chakracore-8.9
@@ -737,4 +726,3 @@ lts-stretch-slim
 slim
 stretch
 stretch-slim
-wheezy
