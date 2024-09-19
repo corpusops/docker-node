@@ -65,9 +65,9 @@ jobs:
       fail-fast: false
       matrix:
         IMAGES:
-        - "library/node/latest library/node/slim library/node/lts library/node/lts-slim library/node/11 library/node/11-slim library/node/10"
-        - "library/node/10-slim library/node/9 library/node/9-slim library/node/8 library/node/8-slim library/node/7 library/node/7-slim"
-        - "library/node/7-alpine library/node/8-alpine library/node/9-alpine"
+        - "library/node/lts library/node/lts-alpine library/node/lts-fermium library/node/lts-gallium library/node/lts-hydrogen library/node/lts-iron library/node/lts-slim"
+        - "library/node/current library/node/current-alpine library/node/current-slim library/node/latest library/node/slim library/node/alpine"
+        - "library/node/22 library/node/22-alpine library/node/22-slim library/node/19 library/node/19-alpine library/node/19-slim library/node/20 library/node/20-alpine library/node/20-slim library/node/21 library/node/21-alpine library/node/21-slim"
         #- "corpusops/test/a corpusops/test/b corpusops/test/c"
         # all images that werent explicitly told to be built would be built in the next batches
         # we span them onto N jobs

@@ -18,7 +18,7 @@ _cops_SYSTEM=$(system_detect.sh||./system_detect.sh||"$W/system_detect.sh")
 DISTRIB_ID=
 DISTRIB_CODENAME=
 DISTRIB_RELEASE=
-oldubuntu="^(10\.|12\.|13\.|14\.|15\.|16\.|17\.|18\.10|19\.|20\.10|21\.)"
+oldubuntu="^(10\.|12\.|13\.|14\.|15\.|16\.|17\.|18\.10|19\.|20\.10|21\.|22\.10)"
 # oldubuntu="^(10\.|12\.|13\.|14.10|15\.|16.10|17\.04)"
 NOSOCAT=""
 CENTOS_OLDSTABLE=8
@@ -85,8 +85,10 @@ if ( grep -q amzn /etc/os-release );then
     if ( amazon-linux-extras help >/dev/null 2>&1 );then
         amazon-linux-extras install -y epel
     else
-        yum install -y epel-release
-        yum-config-manager --enable epel
+        if ( yum list | grep -q epel );then
+            yum install -y epel-release
+            yum-config-manager --enable epel
+        fi
     fi
 fi
 if [ -e /etc/redhat-release ];then
@@ -102,7 +104,7 @@ if [ -e /etc/redhat-release ];then
         yuminstall findutils
     fi
 fi
-DEBIAN_OLDSTABLE=8
+DEBIAN_OLDSTABLE=9
 PG_DEBIAN_OLDSTABLE=9
 find /etc -name "*.reactivate" | while read f;do
     mv -fv "$f" "$(basename $f .reactivate)"
@@ -121,6 +123,7 @@ if (echo $DISTRIB_ID | grep -E -iq "debian");then
         if (echo $DISTRIB_RELEASE | grep -E -iq stretch );then  DISTRIB_CODENAME="$DISTRIB_RELEASE";DISTRIB_RELEASE="9" ;fi
         if (echo $DISTRIB_RELEASE | grep -E -iq buster );then   DISTRIB_CODENAME="$DISTRIB_RELEASE";DISTRIB_RELEASE="10";fi
         if (echo $DISTRIB_RELEASE | grep -E -iq bullseye );then DISTRIB_CODENAME="$DISTRIB_RELEASE";DISTRIB_RELEASE="11";fi
+        if (echo $DISTRIB_RELEASE | grep -E -iq bookworm );then DISTRIB_CODENAME="$DISTRIB_RELEASE";DISTRIB_RELEASE="12";fi
     fi
     sed -i -re "s/(old)?oldstable/$DISTRIB_CODENAME/g" $(find /etc/apt/sources.list* -type f)
     NAPTMIRROR="${NDEBIANMIRROR}"
@@ -162,7 +165,7 @@ if ( echo $DISTRIB_ID | grep -E -iq "debian|mint|ubuntu" );then
         sed -i -re "s!sid(/)?!$DISTRIB_CODENAME\1!" $(find /etc/apt/sources.list* -type f)
         OAPTMIRROR="${OAPTMIRROR:-$ODEBIANMIRROR}"
         sed -i -r -e '/-updates|security.debian.org/d' $( find /etc/apt/sources.list* -type f; )
-        if (echo $DISTRIB_ID|grep -E -iq debian) && [ $DISTRIB_RELEASE -eq $DEBIAN_OLDSTABLE ];then
+        if (echo $DISTRIB_ID|grep -E -iq debian) && [ $DISTRIB_RELEASE -eq $DEBIAN_OLDSTABLE ] && [ $DEBIAN_OLDSTABLE -lt 9 ];then
             log "Using debian LTS packages"
             echo "$DEBIAN_LTS_SOURCELIST" >> /etc/apt/sources.list
             rm -rvf /var/lib/apt/*
