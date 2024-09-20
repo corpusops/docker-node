@@ -256,19 +256,21 @@ SKIP_TF="(tensorflow.serving:[0-9].*)"
 SKIP_MINIO="(k8s-operator|((minio|mc):(RELEASE.)?[0-9]{4}-.{7}))"
 SKIP_MAILU="(mailu.*(feat|patch|merg|refactor|revert|upgrade|fix-|pr-template))"
 SKIP_DOCKER="docker(\/|:)([0-9]+\.[0-9]+\.|17|18.0[1-6]|1$|1(\.|-)).*"
-SKIP_NODE_MINOR="node:[0456789](-(onbuild)|\.([0-9]))|1[01235]\."
-SKIPPED_TAGS="($SKIP_NODE|$SKIP_MINOR|$SKIP_NODE_MINOR)|wheezy"
+SKIPPED_TAGS="$SKIP_TF|$SKIP_MINOR_OS|$SKIP_NODE|$SKIP_DOCKER|$SKIP_MINIO|$SKIP_MAILU|$SKIP_MINOR|$SKIP_PRE|$SKIP_OS|$SKIP_PHP|$SKIP_WINDOWS|$SKIP_MISC"
 CURRENT_TS=$(date +%s)
 IMAGES_SKIP_NS="((mailhog|postgis|pgrouting(-bare)?|^library|dejavu|(minio/(minio|mc))))"
 
+SKIPPED_TAGS="$SKIP_MINOR_OS|$SKIP_MINOR|$SKIP_PRE|$SKIP_OS|$SKIP_MISC"
 
-SKIPPED_TAGS="$SKIPPED_TAGS|bookworm|node:(.*(stretch|jessie|bullseye|buster).*|2[1324567890]\.|1[12345679890]\.)"
+NODE_SKIPPED_TAGS="node:([0-9]+\.[0-9]|.*(alpine[0-9]+|chakra|carbon|boron|argon|bookworm|stretch|jessie|bullseye|buster|-[0-9]+\.[0-9]+(\.[0-9]+)?).*|((8|9|11|13|15|17|19|21|23|25|26|27)(-.*|$|.*(alpine|slim).*)))"
+SKIPPED_TAGS="$NODE_SKIPPED_TAGS"
+# (see docker-elasticsearch for example on how to use)
+PROTECTED_VERSIONS=""
 default_images="
 library/node
 "
-ONLY_ONE_MINOR="postgres|elasticsearch|nginx"
+ONLY_ONE_MINOR="postgres|nginx|opensearch|elasticsearch"
 PROTECTED_TAGS="corpusops/rsyslog"
-
 find_top_node_() {
     img=library/node
     if [ ! -e $img ];then return;fi
@@ -307,6 +309,15 @@ library/node/7-alpine\
  library/node/9-slim-alpine::7
 "
 BATCHED_IMAGES="\
+library/node/22\
+ library/node/22-alpine\
+ library/node/22-slim::30
+library/node/current\
+ library/node/current-alpine\
+ library/node/current-slim\
+ library/node/latest\
+ library/node/alpine\
+ library/node/slim::30
 library/node/lts\
  library/node/lts-alpine\
  library/node/lts-fermium\
@@ -314,24 +325,42 @@ library/node/lts\
  library/node/lts-hydrogen\
  library/node/lts-iron\
  library/node/lts-slim::30
-library/node/current\
- library/node/current-alpine\
- library/node/current-slim\
- library/node/latest\
- library/node/slim\
- library/node/alpine::30
-library/node/22\
- library/node/22-alpine\
- library/node/22-slim\
- library/node/19\
- library/node/19-alpine\
- library/node/19-slim\
- library/node/20\
+library/node/10\
+ library/node/10-alpine\
+ library/node/10-slim\
+ library/node/dubnium\
+ library/node/dubnium-alpine\
+ library/node/dubnium-slim::30
+library/node/12\
+ library/node/12-alpine\
+ library/node/12-slim\
+ library/node/erbium\
+ library/node/erbium-alpine\
+ library/node/erbium-slim::30
+library/node/14\
+ library/node/14-alpine\
+ library/node/14-slim\
+ library/node/fermium\
+ library/node/fermium-alpine\
+ library/node/fermium-slim::30
+library/node/16\
+ library/node/16-alpine\
+ library/node/16-slim\
+ library/node/gallium\
+ library/node/gallium-alpine\
+ library/node/gallium-slim::30
+library/node/18\
+ library/node/18-alpine\
+ library/node/18-slim\
+ library/node/hydrogen\
+ library/node/hydrogen-alpine\
+ library/node/hydrogen-slim::30
+library/node/20\
  library/node/20-alpine\
  library/node/20-slim\
- library/node/21\
- library/node/21-alpine\
- library/node/21-slim::30
+ library/node/iron\
+ library/node/iron-alpine\
+ library/node/iron-slim::30
 "
 SKIP_REFRESH_ANCESTORS=${SKIP_REFRESH_ANCESTORS-}
 
@@ -521,6 +550,10 @@ gen_image() {
 is_skipped() {
     local ret=1 t="$@"
     if [[ -z $SKIPPED_TAGS ]];then return 1;fi
+    if [[ -n "${PROTECTED_VERSIONS}" ]] && ( echo "$t" | grep -E -q "$PROTECTED_VERSIONS" );then
+        debug "$t is protected, no skip"
+        return 1
+    fi
     if ( echo "$t" | grep -E -q "$SKIPPED_TAGS" );then
         ret=0
     fi
@@ -597,7 +630,7 @@ get_image_tags() {
     changed=
     if [[ "x${ONLY_ONE_MINOR}" != "x" ]] && ( echo $n | grep -E -q "$ONLY_ONE_MINOR" );then
         oomt=""
-        for ix in $(seq 0 30);do
+        for ix in $(seq 0 99);do
             if ! ( echo "$atags" | grep -E -q "^$ix\." );then continue;fi
             for j in $(seq 0 99);do
                 if ! ( echo "$atags" | grep -E -q "^$ix\.${j}\." );then continue;fi
@@ -620,10 +653,12 @@ get_image_tags() {
                     fi
                     if [[ -n "$selected" ]];then
                         for l in $(echo "$selected"|sed -e "$ d");do
-                            if [[ -z $oomt ]];then
-                                oomt="$l$"
-                            else
-                                oomt="$oomt|$l"
+                            if [[ -z "${PROTECTED_VERSIONS}" ]] || ! ( echo "$n:$l" | grep "${PROTECTED_VERSIONS}" );then
+                                if [[ -z $oomt ]];then
+                                    oomt="$l$"
+                                else
+                                    oomt="$oomt|$l"
+                                fi
                             fi
                         done
                     fi
@@ -636,7 +671,7 @@ get_image_tags() {
     fi
     if [[ -z ${SKIP_TAGS_REBUILD} ]];then
         rm -f "$t"
-        filter_tags "$atags" > $t
+        filter_tags "$atags" > "$t"
     fi
     set -e
     if [ -e "$t" ];then cat "$t";fi
