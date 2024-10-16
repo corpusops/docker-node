@@ -259,10 +259,9 @@ SKIP_DOCKER="docker(\/|:)([0-9]+\.[0-9]+\.|17|18.0[1-6]|1$|1(\.|-)).*"
 SKIPPED_TAGS="$SKIP_TF|$SKIP_MINOR_OS|$SKIP_NODE|$SKIP_DOCKER|$SKIP_MINIO|$SKIP_MAILU|$SKIP_MINOR|$SKIP_PRE|$SKIP_OS|$SKIP_PHP|$SKIP_WINDOWS|$SKIP_MISC"
 CURRENT_TS=$(date +%s)
 IMAGES_SKIP_NS="((mailhog|postgis|pgrouting(-bare)?|^library|dejavu|(minio/(minio|mc))))"
-
 SKIPPED_TAGS="$SKIP_MINOR_OS|$SKIP_MINOR|$SKIP_PRE|$SKIP_OS|$SKIP_MISC"
 
-NODE_SKIPPED_TAGS="node:([0-9]+\.[0-9]|.*(alpine[0-9]+|chakra|carbon|boron|argon|bookworm|stretch|jessie|bullseye|buster|-[0-9]+\.[0-9]+(\.[0-9]+)?).*|((8|9|11|13|15|17|19|21|23|25|26|27)(-.*|$|.*(alpine|slim).*)))"
+NODE_SKIPPED_TAGS="node:(.*onbuild|[0-9]+\.[0-9]|.*(alpine[0-9]+|chakra|carbon|boron|argon|wheezy|bookworm|stretch|jessie|bullseye|buster|-[0-9]+\.[0-9]+(\.[0-9]+)?).*|((8|9|11|13|15|17|19|21|23|25|26|27)(-.*|$|.*(alpine|slim).*)))"
 SKIPPED_TAGS="$NODE_SKIPPED_TAGS"
 # (see docker-elasticsearch for example on how to use)
 PROTECTED_VERSIONS=""
