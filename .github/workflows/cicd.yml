@@ -65,9 +65,15 @@ jobs:
       fail-fast: false
       matrix:
         IMAGES:
+        - "library/node/22 library/node/22-alpine library/node/22-slim"
+        - "library/node/current library/node/current-alpine library/node/current-slim library/node/latest library/node/alpine library/node/slim"
         - "library/node/lts library/node/lts-alpine library/node/lts-fermium library/node/lts-gallium library/node/lts-hydrogen library/node/lts-iron library/node/lts-slim"
-        - "library/node/current library/node/current-alpine library/node/current-slim library/node/latest library/node/slim library/node/alpine"
-        - "library/node/22 library/node/22-alpine library/node/22-slim library/node/19 library/node/19-alpine library/node/19-slim library/node/20 library/node/20-alpine library/node/20-slim library/node/21 library/node/21-alpine library/node/21-slim"
+        - "library/node/10 library/node/10-alpine library/node/10-slim library/node/dubnium library/node/dubnium-alpine library/node/dubnium-slim"
+        - "library/node/12 library/node/12-alpine library/node/12-slim library/node/erbium library/node/erbium-alpine library/node/erbium-slim"
+        - "library/node/14 library/node/14-alpine library/node/14-slim library/node/fermium library/node/fermium-alpine library/node/fermium-slim"
+        - "library/node/16 library/node/16-alpine library/node/16-slim library/node/gallium library/node/gallium-alpine library/node/gallium-slim"
+        - "library/node/18 library/node/18-alpine library/node/18-slim library/node/hydrogen library/node/hydrogen-alpine library/node/hydrogen-slim"
+        - "library/node/20 library/node/20-alpine library/node/20-slim library/node/iron library/node/iron-alpine library/node/iron-slim"
         #- "corpusops/test/a corpusops/test/b corpusops/test/c"
         # all images that werent explicitly told to be built would be built in the next batches
         # we span them onto N jobs
